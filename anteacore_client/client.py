@@ -18,7 +18,7 @@ class AnteaCoreClient:
         from .identity import get_machine_id
         
         self.machine_id = get_machine_id()
-        self.api_url = os.getenv("ANTEACORE_API_URL", "https://api.anteacore.com")
+        self.api_url = os.getenv("ANTEACORE_API_URL", "https://anteacore-publicapi.up.railway.app")
         self.client = httpx.Client(
             headers={
                 "X-Machine-ID": self.machine_id,

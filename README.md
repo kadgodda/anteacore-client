@@ -18,7 +18,7 @@ This is an early release aimed at trusted developers who want to help build our 
 pip install anteacore-client
 
 # Or install from GitHub
-pip install git+https://github.com/anteacore/anteacore-client.git
+pip install git+https://github.com/kadgodda/anteacore-client.git
 
 # Setup in your project directory
 anteacore-setup
