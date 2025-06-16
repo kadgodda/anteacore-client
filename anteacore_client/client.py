@@ -13,18 +13,25 @@ from datetime import datetime
 class AnteaCoreClient:
     """Client for AnteaCore API interactions."""
     
-    def __init__(self):
+    def __init__(self, privileged_token: Optional[str] = None):
         """Initialize client with machine identity."""
         from .identity import get_machine_id
         
         self.machine_id = get_machine_id()
         self.api_url = os.getenv("ANTEACORE_API_URL", "https://anteacore-publicapi.up.railway.app")
+        self.privileged_token = privileged_token
+        
+        headers = {
+            "X-Machine-ID": self.machine_id,
+            "X-Client-Version": "0.1.0",
+            "User-Agent": "AnteaCore-Client/0.1.0"
+        }
+        
+        if self.privileged_token:
+            headers["X-Privileged-Token"] = self.privileged_token
+            
         self.client = httpx.Client(
-            headers={
-                "X-Machine-ID": self.machine_id,
-                "X-Client-Version": "0.1.0",
-                "User-Agent": "AnteaCore-Client/0.1.0"
-            },
+            headers=headers,
             timeout=30.0
         )
     
@@ -48,6 +55,26 @@ class AnteaCoreClient:
                 "success": False,
                 "error": str(e)
             }
+    
+    def activate_privileged_mode(self, secret: str) -> Dict[str, Any]:
+        """Activate privileged mode with master secret."""
+        try:
+            response = self.client.post(
+                f"{self.api_url}/api/client/privileged/activate",
+                json={"secret": secret}
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success"):
+                    # Update client with privileged token
+                    self.privileged_token = data["token"]
+                    self.client.headers["X-Privileged-Token"] = self.privileged_token
+                    return data
+            
+            return response.json()
+        except Exception as e:
+            return {"error": str(e)}
     
     def search_knowledge(
         self,
