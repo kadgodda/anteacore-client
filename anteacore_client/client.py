@@ -8,24 +8,21 @@ import os
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 import httpx
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class AnteaCoreClient:
     """Client for AnteaCore API interactions."""
     
     def __init__(self, privileged_token: Optional[str] = None):
-        """Initialize client with machine identity."""
-        from .identity import get_machine_id
+        """Initialize client with anonymous session."""
+        from .anonymous_identity import get_anonymous_headers
         
-        self.machine_id = get_machine_id()
         self.api_url = os.getenv("ANTEACORE_API_URL", "https://anteacore-publicapi.up.railway.app")
         self.privileged_token = privileged_token
         
-        headers = {
-            "X-Machine-ID": self.machine_id,
-            "X-Client-Version": "0.1.0",
-            "User-Agent": "AnteaCore-Client/0.1.0"
-        }
+        # Get anonymous headers (includes session ID)
+        headers = get_anonymous_headers()
+        headers["User-Agent"] = "AnteaCore-Client/0.1.0"
         
         if self.privileged_token:
             headers["X-Privileged-Token"] = self.privileged_token
@@ -214,3 +211,17 @@ class AnteaCoreClient:
             return response.json()
         except Exception as e:
             return {"error": str(e)}
+    
+    def get_session_info(self) -> Dict[str, Any]:
+        """Get current anonymous session information."""
+        from .anonymous_identity import load_or_create_session, get_display_name
+        
+        session = load_or_create_session()
+        return {
+            "display_name": get_display_name(),
+            "session_id": session.session_id,
+            "created_at": session.created_at.isoformat(),
+            "expires_at": (session.created_at + timedelta(hours=24)).isoformat(),
+            "submission_count": session.submission_count,
+            "anonymous": True
+        }

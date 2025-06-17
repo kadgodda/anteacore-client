@@ -5,18 +5,18 @@ Test the AnteaCore client package with the live Railway API
 
 import json
 from anteacore_client import AnteaCoreClient
-from anteacore_client.identity import get_machine_id
 
 def test_client():
     print("=== AnteaCore Client API Test ===\n")
     
-    # Show machine ID
-    machine_id = get_machine_id()
-    print(f"Machine ID: {machine_id}")
-    
     # Initialize client
     client = AnteaCoreClient()
-    print(f"API URL: {client.api_url}\n")
+    print(f"API URL: {client.api_url}")
+    
+    # Show session info
+    session_info = client.get_session_info()
+    print(f"Anonymous Session: {session_info['display_name']}")
+    print(f"Session expires: {session_info['expires_at']}\n")
     
     # Test 1: Connection test
     print("1. Testing connection...")

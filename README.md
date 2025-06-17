@@ -32,15 +32,18 @@ anteacore-test
 - 🔍 **Search** 10,000+ development patterns
 - 🤝 **Contribute** your solutions to help others
 - 🤖 **Get** AI-powered suggestions
-- 🔐 **Anonymous** contributions (no signup required)
+- 🔐 **Truly Anonymous** contributions with privacy-first design
 - ⚡ **Seamless** Claude Desktop integration
+- 🎭 **Fun Display Names** like "Swift Fox" or "Wise Owl"
+- 🔄 **Session-Based** temporary identifiers (24-hour expiration)
 
 ## How It Works
 
-1. **Machine Identity**: Generates anonymous ID from your hardware
-2. **No Account Needed**: Start contributing immediately
+1. **Anonymous Sessions**: Temporary session IDs that expire after 24 hours
+2. **No Tracking**: No hardware fingerprinting or persistent identification
 3. **Knowledge Sharing**: Your patterns help the entire community
-4. **Privacy First**: No personal data collected
+4. **Privacy by Design**: No personal or hardware data ever collected
+5. **User Control**: Clear your session anytime with `anteacore-clear`
 
 ## Usage with Claude Code
 
@@ -94,6 +97,25 @@ anteacore-knowledge.report_issue({
 - Python 3.8+
 - Claude Desktop
 - Internet connection
+
+## Privacy & Security
+
+### Your Privacy Matters
+- **No Hardware Tracking**: We don't collect MAC addresses, CPU info, or any hardware identifiers
+- **Anonymous Sessions**: Temporary IDs that expire after 24 hours
+- **No Personal Data**: We never ask for or store personal information
+- **User Control**: Clear your session anytime with `python -m anteacore_client.anonymous_identity --clear`
+
+### Security Features
+- **Read-Only by Default**: Most operations are read-only
+- **Rate Limiting**: Prevents abuse while maintaining anonymity
+- **Content Validation**: All contributions are validated before acceptance
+- **No Persistent Storage**: Nothing stored between sessions unless you explicitly save it
+
+### Transparency
+- **Open Source**: Review our code to verify our privacy claims
+- **No Hidden Tracking**: What you see is what you get
+- **GDPR/CCPA Compliant**: Privacy by design
 
 ## Terms of Use
 

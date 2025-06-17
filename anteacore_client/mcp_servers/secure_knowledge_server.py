@@ -35,28 +35,32 @@ class SecureKnowledgeServer:
         self.api_url = os.getenv("ANTEACORE_API_URL", "https://api.anteacore.com")
         self.project_dir = os.getenv("ANTEACORE_PROJECT_DIR", os.getcwd())
         self.version = "0.1.0"
-        self.machine_id = self._load_machine_id()
+        
+        # Import anonymous identity functions
+        import sys
+        sys.path.insert(0, str(Path(__file__).parent.parent))
+        from anonymous_identity import get_anonymous_headers
+        
+        # Get anonymous headers
+        headers = get_anonymous_headers()
+        headers["User-Agent"] = f"AnteaCore-Client/{self.version}"
+        
         self.client = httpx.AsyncClient(
-            headers={
-                "X-Machine-ID": self.machine_id,
-                "X-Client-Version": self.version,
-                "User-Agent": f"AnteaCore-Client/{self.version}"
-            },
+            headers=headers,
             timeout=30.0
         )
         self._setup_allowed_tools_only()
     
-    def _load_machine_id(self) -> str:
-        """Load machine ID from identity file."""
-        identity_file = Path.home() / ".anteacore" / "identity.json"
+    def _get_session_info(self) -> Dict[str, Any]:
+        """Get current anonymous session info."""
+        from anonymous_identity import load_or_create_session, get_display_name
         
-        if not identity_file.exists():
-            raise RuntimeError("Machine identity not found. Run: anteacore-setup")
-        
-        with open(identity_file, 'r') as f:
-            identity = json.load(f)
-        
-        return identity['machine_id']
+        session = load_or_create_session()
+        return {
+            "display_name": get_display_name(),
+            "session_id": session.session_id,
+            "anonymous": True
+        }
     
     def _setup_allowed_tools_only(self):
         """Setup only allowed tools for clients."""
